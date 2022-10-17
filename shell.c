@@ -134,13 +134,8 @@ int shell_execute(int argc, char *argv[])
         }
 
         char mode;
-        if (strcmp(argv[argc], "&t") == 0) mode = 't';
+        if (strcmp(argv[argc - 1], "&t") == 0) mode = 't';
         else mode = 'p';
-
-            // int index = 0;
-            // while (command[index + 2] != '\0') index++;
-            // if (command[index] == '&' && command[index + 1] == 't') mode = 't';
-            // else mode = 'p';
 
         if (mode == 't')
         {

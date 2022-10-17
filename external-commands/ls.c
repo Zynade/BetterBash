@@ -90,6 +90,11 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    if (strcmp(argv[0], "./") == 0)
+    {
+        argv[0] = argv[0] + 2;
+    }
+
     bool flag_a = false;
     bool flag_r = false;
 
@@ -113,22 +118,37 @@ int main(int argc, char *argv[])
         }
     }
 
-    // get cwd
-    char cwd[1024];
-    if (getcwd(cwd, sizeof(cwd)) == NULL)
+    // Get the file path
+    char path[1024];
+    if (getcwd(path, sizeof(path)) == NULL)
     {
         perror("ls");
     }
+    if (argc >= 2)
+    {
+        int index = 1;
+        bool is_path_to_be_changed = false;
+        while (index < argc) 
+        {
+            // Find the index of the first argument that isn't a flag or a mode.
+            if (argv[index][0] != '&' && argv[index][0] != '-') 
+            {
+                is_path_to_be_changed = true;
+                break;
+            }
+            index++; 
+        }
+        if (is_path_to_be_changed && index != argc)
+        {
+            strcat(path, "/");
+            strcat(path, argv[index]);
+        }
+    }
 
-    // print the files in the current directory
-    // if flag_a is true, print all files
-    // if flag_r is true, print the files in reverse order
-    // otherwise, print only the non-hidden files
-
-    // Loop through all files in cwd and add them to a doubly linked list
+    // Loop through all files in the path and add them to a doubly linked list
     DIR *dir;
     struct dirent *ent;
-    if ((dir = opendir(cwd)) != NULL)
+    if ((dir = opendir(path)) != NULL)
     {
         while ((ent = readdir(dir)) != NULL)
         {
