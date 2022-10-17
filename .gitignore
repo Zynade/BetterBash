@@ -1,0 +1,7 @@
+test_dir/
+external-commands/ls
+external-commands/cat
+external-commands/date
+external-commands/rm
+external-commands/mkdir
+shell
