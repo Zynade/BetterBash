@@ -104,13 +104,14 @@ int main(int argc, char *argv[])
         char *argument = argv[i];
         if (argument[0] == '-')
         {
-            for (int i = 0; argument[i] != '\0'; i++)
+            int j = 1;
+            for (; argument[j] != '\0'; j++)
             {
-                if (argument[i] == 'a')
+                if (argument[j] == 'a')
                 {
                     flag_a = true;
                 }
-                if (argument[i] == 'r')
+                if (argument[j] == 'r')
                 {
                     flag_r = true;
                 }

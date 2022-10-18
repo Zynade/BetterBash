@@ -10,12 +10,18 @@ Permitted commands: cd, echo, pwd, ls, cat, date, rmdir
 ### Usage: `$ echo [arg]` 
 
 ## ls
-### Usage: `$ ls <flags> <path>`
-<.> represents an optional argument.
-
+### Usage: `$ ls [FLAGS] [DIRECTORY]`
+if `DIRECTORY` is not specified, print the contents of the current working directory.
 ### Flags supported:
 1. `-a`: do not ignore hidden files, i.e., entries starting with "."
 2. `-r`: reserve order while sorting
+
+## cat
+### Usage: `$ cat [FLAGS] [FILE]...`
+if `FILE` is `-`, use `stdin` as the file pointer.
+### Flags supported:
+1. `-n`: number all output lines
+2. `-E`: display $ at end of each line
 
 # Pseudocode
 
@@ -35,9 +41,7 @@ Entry point:
             function(args)
         else:
             if mode is thread:
-                // pthread commands to execute the instructions
                 start_thread(args)
             else:
-                // pid(), fork() etc commands 
                 start_process(args)
 ```
