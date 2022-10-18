@@ -4,15 +4,16 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <assert.h>
 
-#define BUFFER_SIZE 1000
+#define MAX_TOKENS_BUFFER_SIZE 1000
 
 void shell_loop(void);
 char *read_line(void);
 int tokenize_line(char *, char **);
 int shell_execute(int, char **);
 
-#define MAX_TOKENS_BUFFER_SIZE 1000
+char PROGRAM_PATH[1024];
 
 char *builtin_commands[] = {"cd", "echo", "pwd"};
 int num_builtin_commands = 3;
@@ -28,6 +29,7 @@ int start_process(char *command, char *argv[]);
 
 int main(int argc, char *argv[])
 {
+    assert(getcwd(PROGRAM_PATH, sizeof(PROGRAM_PATH)) != NULL);
     shell_loop();
     return 0;
 }
@@ -49,7 +51,7 @@ void shell_loop(void)
         int argc = tokenize_line(line, argv);
         if (argc == -1) continue; // The user entered a line that could not be parsed, so prompt them to enter another line.
         return_code = shell_execute(argc, argv);
-        if (return_code == -1)
+        if (return_code < 0)
         {
             break;
         }
@@ -172,11 +174,13 @@ int start_process(char *command, char *argv[])
     {
         // child process
         char path[1024];
-        strcpy(path, "./external-commands/");
+        strcpy(path, PROGRAM_PATH);
+        strcat(path, "/external-commands/");
         strcat(path, command);
+        
         if (execv(path, argv) == -1)
         {
-            fprintf(stderr, "shell: command not found: %s", command);
+            fprintf(stderr, "shell: command not found: %s\n", command);
         }
         exit(0);
     }
