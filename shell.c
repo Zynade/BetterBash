@@ -51,14 +51,7 @@ void shell_loop(void)
         int argc = tokenize_line(line, argv);
         if (argc == -1) continue; // The user entered a line that could not be parsed, so prompt them to enter another line.
         return_code = shell_execute(argc, argv);
-        if (return_code < 0)
-        {
-            break;
-        }
-        else if (return_code == 0)
-        {
-            continue;
-        }
+        if (return_code < 0) break;
     }
     free(argv);
 }
@@ -135,7 +128,7 @@ int shell_execute(int argc, char *argv[])
         if (strlen(command) < 2)
         {
             fprintf(stderr, "shell: command not found: %s\n", command);
-            return 0;
+            return 1;
         }
 
         char mode;
@@ -151,7 +144,7 @@ int shell_execute(int argc, char *argv[])
             if (argc < 2)
             {
                 fprintf(stderr, "shell: command not found: %s\n", command);
-                return 0;
+                return 1;
             }
             // The command requests for a thread to execute the instruction.
             // launch a thread to execute the program!
