@@ -1,4 +1,21 @@
-# basic-shell-
+# simple-shell
+An attempt at implementing a shell.  
+Permitted commands: cd, echo, pwd, ls, cat, date, rmdir
+
+# Docs
+## cd
+### Usage: `$ cd [directory]`
+
+## echo
+### Usage: `$ echo [arg]` 
+
+## ls
+### Usage: `$ ls <flags> <path>`
+<.> represents an optional argument.
+
+### Flags supported:
+1. `-a`: do not ignore hidden files, i.e., entries starting with "."
+2. `-r`: reserve order while sorting
 
 # Pseudocode
 
