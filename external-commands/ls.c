@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 {
     if (argc < 1)
     {
-        fprintf(stderr, "Usage: ls\n");
+        fprintf(stderr, "Usage: ls [OPTIONS] [DIRECTORY]\n");
         return 1;
     }
 

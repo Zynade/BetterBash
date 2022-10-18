@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 #define BUFFER_SIZE 1000
 
@@ -19,6 +20,9 @@ int num_builtin_commands = 3;
 void cd(int argc, char *argv[]);
 void echo(int argc, char *argv[]);
 void pwd(int argc, char *argv[]);
+
+int start_thread(char *command, char *argv[]);
+int start_process(char *command, char *argv[]);
 
 /*--------------------------------------------------- MAIN ---------------------------------------------------*/
 
@@ -42,7 +46,6 @@ void shell_loop(void)
     {
         printf("$ ");
         line = read_line();
-        printf("line entered: %s", line);
         int argc = tokenize_line(line, argv);
         if (argc == -1) continue; // The user entered a line that could not be parsed, so prompt them to enter another line.
         return_code = shell_execute(argc, argv);
@@ -141,14 +144,55 @@ int shell_execute(int argc, char *argv[])
         {
             // The command requests for a thread to execute the instruction.
             // launch a thread to execute the program!
+            // start_thread(command, argv);
         }
         else if (mode == 'p')
         {
             // The command requests a new process to execute the instruction.
             // create another process to execute the program!
+            return start_process(command, argv);
         }
     }
     return 0;
+}
+
+/*-------------------------------------------- PROCESSES & THREADS --------------------------------------------*/
+
+int start_thread(char *command, char *argv[])
+{
+    // TODO
+    return 0;
+}
+
+int start_process(char *command, char *argv[])
+{
+    pid_t pid;
+    pid = fork();
+    if (pid == 0)
+    {
+        // child process
+        char path[1024];
+        strcpy(path, "./external-commands/");
+        strcat(path, command);
+        if (execv(path, argv) == -1)
+        {
+            fprintf(stderr, "shell: command not found: %s", command);
+        }
+        exit(0);
+    }
+    else if (pid < 0)
+    {
+        // error forking
+        fprintf(stderr, "shell: error forking");
+        return -1;
+    }
+    else
+    {
+        // parent process
+        int status;
+        waitpid(pid, &status, 0);
+        return 0;
+    }
 }
 
 /*----------------------------------------------- BUILT-IN COMMANDS -----------------------------------------------*/
