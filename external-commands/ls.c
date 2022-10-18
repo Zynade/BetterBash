@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (strcmp(argv[0], "./") == 0)
+    if (strcmp(&argv[0][1], ".") == 0 && strcmp(&argv[0][2], "/") == 0)
     {
         argv[0] = argv[0] + 2;
     }

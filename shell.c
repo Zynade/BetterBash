@@ -134,19 +134,28 @@ int shell_execute(int argc, char *argv[])
         // The command is not a built-in command, and a process or thread must be launched as appropriate.
         if (strlen(command) < 2)
         {
-            fprintf(stderr, "shell: command not found: %s", command);
+            fprintf(stderr, "shell: command not found: %s\n", command);
             return 0;
         }
 
         char mode;
-        if (strcmp(argv[argc - 1], "&t") == 0) mode = 't';
+        if (strcmp(argv[argc - 1], "&t") == 0) 
+        {
+            argv[argc - 1] = NULL;
+            mode = 't';
+        }
         else mode = 'p';
 
         if (mode == 't')
         {
+            if (argc < 2)
+            {
+                fprintf(stderr, "shell: command not found: %s\n", command);
+                return 0;
+            }
             // The command requests for a thread to execute the instruction.
             // launch a thread to execute the program!
-            // start_thread(command, argv);
+            return start_thread(command, argv);
         }
         else if (mode == 'p')
         {
@@ -162,8 +171,18 @@ int shell_execute(int argc, char *argv[])
 
 int start_thread(char *command, char *argv[])
 {
-    // TODO
-    return 0;
+    char path[1024];
+    strcpy(path, PROGRAM_PATH);
+    strcat(path, "/external-commands/");
+    strcat(path, command);
+    char *arg = argv[1];
+    for (int i = 1; arg != NULL; i++)
+    {
+        strcat(path, " ");
+        strcat(path, arg);
+        arg = argv[i+1];
+    }
+    return system(path);
 }
 
 int start_process(char *command, char *argv[])
