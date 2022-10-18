@@ -1,13 +1,18 @@
-all: shell external-commands/ls external-commands/cat
+cmd_dir := ./external-commands/
+cmds := ls cat rm
 
-shell: shell.c
-	gcc -o shell shell.c -g -Wall
+define compile_program =
+	gcc -o $(1) $(1).c -g -Wall
+endef
 
-external-commands/ls: external-commands/ls.c
-	gcc -o external-commands/ls external-commands/ls.c -g -Wall
-	
-external-commands/cat: external-commands/cat.c
-	gcc -o external-commands/cat external-commands/cat.c -g -Wall
+all: shell
+	# @echo "Building all commands"
+	# build shell
+	$(MAKE) -C $(cmd_dir)
+
+shell:
+	$(call compile_program,shell)
 
 clean:
-	rm shell external-commands/ls external-commands/cat external-commands/date external-commands/rm external-commands/mkdir
+	rm shell
+	cd $(cmd_dir) && rm $(cmds)
