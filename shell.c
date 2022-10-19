@@ -20,14 +20,14 @@ int num_builtin_commands = 3;
 
 void cd(int argc, char *argv[]);
 void echo(int argc, char *argv[]);
-void pwd(int argc, char *argv[]);
+void pwd(void);
 
 int start_thread(char *command, char *argv[]);
 int start_process(char *command, char *argv[]);
 
 /*--------------------------------------------------- MAIN ---------------------------------------------------*/
 
-int main(int argc, char *argv[])
+int main(void)
 {
     assert(getcwd(PROGRAM_PATH, sizeof(PROGRAM_PATH)) != NULL);
     shell_loop();
@@ -120,7 +120,7 @@ int shell_execute(int argc, char *argv[])
     }
     else if (strcmp(command, "pwd") == 0)
     {
-        pwd(argc, argv);
+        pwd();
     }
     else
     {
@@ -242,7 +242,7 @@ void echo(int argc, char *argv[])
         printf("\n");
     }
 }
-void pwd(int argc, char *argv[])
+void pwd(void)
 {
     char cwd[1024];
     if (getcwd(cwd, sizeof(cwd)) != NULL)
