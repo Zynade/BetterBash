@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     char file_name[1024];
     if (getcwd(cwd, sizeof(cwd)) == NULL)
     {
-        perror("ls");
+        perror("cat");
     }
     if (argc == 1 || !found_non_flag_arg)
     {

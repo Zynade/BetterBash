@@ -18,10 +18,20 @@ if `DIRECTORY` is not specified, print the contents of the current working direc
 
 ## cat
 ### Usage: `$ cat [FLAGS] [FILE]...`
-if `FILE` is `-`, use `stdin` as the file pointer.
+if `FILE` is `-`, or no `FILE` is provided, use `stdin` as the file pointer.
 ### Flags supported:
 1. `-n`: number all output lines
 2. `-E`: display $ at end of each line
+
+## rm
+### Usage: `$rm [FLAGS] [FILE]...`
+### Flags supported:
+1. `-r`: remove directories and their contents recursively
+2. `-i`: prompt for confirmation before every removal 
+
+Edge cases handled: 
+1. if a file is named `-`, running `rm -` does not lead to errors.
+2. if user attempts to remove `.` or `..`, refuse.
 
 # Pseudocode
 
