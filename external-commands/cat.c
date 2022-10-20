@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
             }
             if (echo_from_file(file_name, flag_n, flag_E) == 1)
             {
-                return 1;
+                continue;
             }
         }
     }
