@@ -1,4 +1,4 @@
-cmds := ls cat rm
+cmds := ls cat rm mkdir
 FLAGS := -g -Wall -Wshadow -Wextra -Wconversion
 
 define compile_program =
