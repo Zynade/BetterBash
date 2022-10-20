@@ -3,8 +3,10 @@
 #include <stdbool.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 int echo_from_file(char *file_name, bool flag_n, bool flag_E);
+int is_directory(const char *path);
 
 int main(int argc, char *argv[])
 {
@@ -90,6 +92,12 @@ int main(int argc, char *argv[])
 
 int echo_from_file(char *file_name, bool flag_n, bool flag_E)
 {
+    if (is_directory(file_name))
+    {
+        fprintf(stderr, "cat: %s: Is a directory", file_name);
+        return 1;
+    }
+
     FILE *fp = fopen(file_name, "r");
     char *line = NULL;
     size_t len = 0;
@@ -116,4 +124,12 @@ int echo_from_file(char *file_name, bool flag_n, bool flag_E)
         line_number++;
     }
     return 0;
+}
+
+int is_directory(const char *path)
+{
+    // SOURCE: https://stackoverflow.com/a/4553053/12215003
+   struct stat statbuf;
+   if (stat(path, &statbuf) != 0) return 0;
+   return S_ISDIR(statbuf.st_mode);
 }

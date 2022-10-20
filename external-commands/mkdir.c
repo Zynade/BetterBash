@@ -76,19 +76,10 @@ int main(int argc, char *argv[])
 
 int create_directory(const char *path, struct flags *flags)
 {
-    if (is_directory(path))
+    if (is_directory(path) || is_regular_file(path))
     {
         fprintf(stderr, "mkdir: cannot create directory '%s': File exists\n", path);
         return 1;
-        // free(flags);
-        // return 1;
-    }
-    else if (is_regular_file(path))
-    {
-        fprintf(stderr, "mkdir: cannot create directory '%s': Not a directory\n", path);
-        return 1;
-        // free(flags);
-        // return 1;
     }
     else
     {
