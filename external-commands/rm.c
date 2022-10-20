@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
     if (!nonFlagArgExists)
     {
         fprintf(stderr, "rm: missing operand\n");
+        fprintf(stderr, "Usage: rm [FLAGS] [FILE]...\n");
         free(flags);
         return 1;
     }
