@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
     if (!nonFlagArgExists)
     {
         fprintf(stderr, "rm: missing operand\n");
+        free(flags);
         return 1;
     }
 
@@ -63,6 +64,7 @@ int main(int argc, char *argv[])
     if (getcwd(cwd, sizeof(cwd)) == NULL)
     {
         perror("rm");
+        free(flags);
         return 1;
     }
 
@@ -82,6 +84,7 @@ int main(int argc, char *argv[])
             remove_file(file_name, flags);
         }
     }
+    free(flags);
     return 0;
 }
 
