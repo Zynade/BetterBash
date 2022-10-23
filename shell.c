@@ -62,7 +62,7 @@ char *read_line(void)
     size_t buffer_size = 0;
     if (getline(&line, &buffer_size, stdin) == -1)
     {
-        printf("\nreadline: EOF detected, terminating program.\n");
+        printf("\nshell: EOF detected, terminating shell.\n");
         exit(0);
         // fprintf(stderr, "shell: input too long");
     }
@@ -90,7 +90,7 @@ int tokenize_line(char *line, char **args)
         argc++;
         if (argc > MAX_TOKENS_BUFFER_SIZE)
         {
-            fprintf(stderr, "tokenize_line: your line contained more arguments than permitted (max: %d)", MAX_TOKENS_BUFFER_SIZE);
+            fprintf(stderr, "shell: your instruction contains more arguments than permitted (max: %d)", MAX_TOKENS_BUFFER_SIZE);
             return -1;
         }
         args[i++] = token;
