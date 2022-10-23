@@ -47,7 +47,7 @@ if `FILE` is `-`, or no `FILE` is provided, use `stdin` as the file pointer.
 5. If there is no file argument, print an error message.
 ***
 ## mkdir
-### Usage: `$mkdir [FLAGS] [DIRECTORY]...`
+### Usage: `$ mkdir [FLAGS] [DIRECTORY]...`
 ### Flags supported:
 1. `-v`: Verbose output. Print a message for each created directory
 2. `-p`: No error if existing. make parent directories as needed.
@@ -59,8 +59,17 @@ if `FILE` is `-`, or no `FILE` is provided, use `stdin` as the file pointer.
 5. If there is no directory argument, print an error message.
 6. If the user tries to created nested directories without passing the -p flag, print an error message.
 ***
-# Pseudocode
 
+## date
+### Usage: `$ date [FLAGS]`
+### Flags supported:
+1. `-u`: print Coordinated Universal Time
+2. `-R`: print date and time in RFC 5322 format
+### Edge cases handled:
+1. If the flag is invalid, print an error.
+2. If the date passed is invalid, print an error.
+***
+# Pseudocode
 ```py
 Entry point:
     main()

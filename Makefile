@@ -1,5 +1,5 @@
 cmd_dir := ./external-commands/
-cmds := ls cat rm mkdir
+cmds := ls cat rm mkdir date
 FLAGS := -g -Wall -Wshadow -Wextra -Wconversion
 
 define compile_program =
