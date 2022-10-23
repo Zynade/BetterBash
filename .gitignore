@@ -5,3 +5,4 @@ external-commands/date
 external-commands/rm
 external-commands/mkdir
 shell
+.vscode/
