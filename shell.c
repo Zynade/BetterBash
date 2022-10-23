@@ -47,7 +47,7 @@ void shell_loop(void)
         printf("$ ");
         line = read_line();
         int argc = tokenize_line(line, argv);
-        if (argc == -1) continue; // The user entered a line that could not be parsed, so prompt them to enter another line.
+        if (argc == -1) continue; // The user entered a line that could not be parsed, so prompt them to enter another instruction.
         return_code = shell_execute(argc, argv);
         if (return_code < 0) break;
     }
@@ -56,13 +56,15 @@ void shell_loop(void)
 
 char *read_line(void)
 {
+    /*
+    Reads a line from stdin and returns it as a string.
+    */
     char *line = NULL;
     size_t buffer_size = 0;
     if (getline(&line, &buffer_size, stdin) == -1)
     {
         printf("\nshell: EOF detected, terminating shell.\n");
         exit(0);
-        // fprintf(stderr, "shell: input too long");
     }
     return line;
 }
@@ -70,9 +72,8 @@ char *read_line(void)
 int tokenize_line(char *line, char **args)
 {
     /* 
-    line: string to parse
-    args: array of strings to write the tokens into
-    returns: argc
+    Tokenizes a line into an argv vector.
+    Returns the number of tokens in the line.
     */
 
     int i = 0;
@@ -100,8 +101,15 @@ int tokenize_line(char *line, char **args)
 
 int shell_execute(int argc, char *argv[])
 {
-    // internal: cd, echo, pwd
-    // external: ls, cat, date, rm, mkdir
+    /*
+    Executes a command.
+    Returns the return code of the command.
+
+    Supports the following commands:
+        in-built: cd, echo, pwd
+        external: ls, cat, date, rm, mkdir
+    */
+
     if (argc < 1)
     {
         return 0;
@@ -122,7 +130,7 @@ int shell_execute(int argc, char *argv[])
     }
     else
     {
-        // The command is not a built-in command, and a process or thread must be launched as appropriate.
+        // External command
         if (strlen(command) < 2)
         {
             fprintf(stderr, "shell: command not found: %s\n", command);
@@ -139,19 +147,17 @@ int shell_execute(int argc, char *argv[])
 
         if (mode == 't')
         {
-            if (argc < 2)
+            // Start a thread
+            if (argc < 2) // Thread instructions must have at least two arguments: the program, and "&t"
             {
                 fprintf(stderr, "shell: command not found: %s\n", command);
                 return 1;
             }
-            // The command requests for a thread to execute the instruction.
-            // launch a thread to execute the program!
             return start_thread(command, argv);
         }
         else if (mode == 'p')
         {
-            // The command requests a new process to execute the instruction.
-            // create another process to execute the program!
+            // Start a process
             return start_process(command, argv);
         }
     }
@@ -162,6 +168,10 @@ int shell_execute(int argc, char *argv[])
 
 int start_thread(char *command, char *argv[])
 {
+    /*
+    Starts a thread.
+    Returns the return code of the thread.
+    */
     char path[1024];
     strcpy(path, PROGRAM_PATH);
     strcat(path, "/external-commands/");
@@ -178,11 +188,15 @@ int start_thread(char *command, char *argv[])
 
 int start_process(char *command, char *argv[])
 {
-    pid_t pid;
-    pid = fork();
+    /*
+    Starts a process.
+    Returns the return code of the process.
+    */
+
+    pid_t pid = fork();
     if (pid == 0)
     {
-        // child process
+        // Child process. Execute the command.
         char path[1024];
         strcpy(path, PROGRAM_PATH);
         strcat(path, "/external-commands/");
@@ -196,13 +210,12 @@ int start_process(char *command, char *argv[])
     }
     else if (pid < 0)
     {
-        // error forking
         fprintf(stderr, "shell: error forking");
         return -1;
     }
     else
     {
-        // parent process
+        // Parent process. Wait for the child to complete.
         int status;
         waitpid(pid, &status, 0);
         return 0;
@@ -213,6 +226,10 @@ int start_process(char *command, char *argv[])
 
 void cd(int argc, char *argv[])
 {
+    /*
+    Changes the current working directory of the current process.
+    */
+
     if (argc < 2)
     {
         fprintf(stderr, "cd: expected argument to \"cd\"\n");
@@ -227,10 +244,10 @@ void cd(int argc, char *argv[])
 }
 void echo(int argc, char *argv[])
 {
-    // if (argc < 2)
-    // {
-    //     fprintf(stderr, "echo: expected argument to \"echo\"\n");
-    // }
+    /*
+    Prints the arguments to stdout.
+    */
+
     if (argc == 1) 
     {
         printf("\n");
@@ -270,6 +287,10 @@ void echo(int argc, char *argv[])
 }
 void pwd(void)
 {
+    /*
+    Prints the current working directory to stdout.
+    */
+   
     char cwd[1024];
     if (getcwd(cwd, sizeof(cwd)) != NULL)
     {
