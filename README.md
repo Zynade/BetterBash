@@ -8,6 +8,8 @@ Permitted commands: cd, echo, pwd, ls, cat, date, rmdir, mkdir
 ***
 ## echo
 ### Usage: `$ echo [arg]` 
+### Flags supported:
+1. `-n`: do not append the newline character
 ***
 ## pwd
 ### Usage: `$ pwd`

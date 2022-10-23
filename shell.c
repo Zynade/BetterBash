@@ -7,6 +7,7 @@
 #include <assert.h>
 
 #define MAX_TOKENS_BUFFER_SIZE 1000
+#define ARGUMENT_BUFFER_LENGTH 1024
 
 void shell_loop(void);
 char *read_line(void);
@@ -14,9 +15,6 @@ int tokenize_line(char *, char **);
 int shell_execute(int, char **);
 
 char PROGRAM_PATH[1024];
-
-char *builtin_commands[] = {"cd", "echo", "pwd"};
-int num_builtin_commands = 3;
 
 void cd(int argc, char *argv[]);
 void echo(int argc, char *argv[]);
@@ -229,18 +227,46 @@ void cd(int argc, char *argv[])
 }
 void echo(int argc, char *argv[])
 {
-    if (argc < 2)
+    // if (argc < 2)
+    // {
+    //     fprintf(stderr, "echo: expected argument to \"echo\"\n");
+    // }
+    if (argc == 1) 
     {
-        fprintf(stderr, "echo: expected argument to \"echo\"\n");
-    }
-    else
-    {
-        for (int i = 1; i < argc; i++)
-        {
-            printf("%s ", argv[i]);
-        }
         printf("\n");
+        return;
     }
+    bool flag_n = false;
+    bool is_first_output = true;
+    char buffer[ARGUMENT_BUFFER_LENGTH];
+    for (int i = 1; i < argc; i++)
+    {
+        strcpy(buffer, argv[i]);
+        if (i == 1 && buffer[0] == '-' && buffer[1] == 'n')
+        {
+            flag_n = true;
+        }
+        else
+        {
+            char *p = buffer;
+            if (
+                (buffer[0] == '\'' && buffer[strlen(buffer) - 1] == '\'') || 
+                (buffer[0] == '\"' && buffer[strlen(buffer) - 1] == '\"')
+                )
+            {
+                p[strlen(p) - 1] = '\0';
+                p++;
+            }
+            if (is_first_output)
+            {
+                printf("%s", p);
+                is_first_output = false;
+            }
+            else printf(" %s", p);
+        }
+    }
+    if (!flag_n) printf("\n");
+    return;
 }
 void pwd(void)
 {
