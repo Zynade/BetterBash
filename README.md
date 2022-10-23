@@ -1,8 +1,16 @@
-# simple-shell
-An attempt at implementing a shell.  
-Permitted commands: cd, echo, pwd, ls, cat, date, rmdir, mkdir
+# About
+An attempt at implementing a terminal shell. 
 
-# Docs
+My goal was to implement the following commands, with the option of passing two commonly used flags for each command:  
+[cd](#cd), [echo](#echo), [pwd](#pwd), [ls](#ls), [cat](#cat), [date](#date), [rm](#rm), [mkdir](#mkdir)
+
+# How to run
+1. Clone the repository: `git clone https://github.com/Zynade/simple-shell.git`
+2. Navigate to the directory: `cd simple-shell`
+3. Compile the program: `make`
+4. Run the program: `./shell`
+
+# Documentation
 ## cd
 ### Usage: `$ cd [directory]`
 ***
@@ -36,6 +44,15 @@ if `FILE` is `-`, or no `FILE` is provided, use `stdin` as the file pointer.
 1. If the file does not exist, print an error message.
 2. If the file is a directory, print an error message.
 ***
+## date
+### Usage: `$ date [FLAGS]`
+### Flags supported:
+1. `-u`: print Coordinated Universal Time
+2. `-R`: print date and time in RFC 5322 format
+### Edge cases handled:
+1. If the flag is invalid, print an error.
+2. If the date passed is invalid, print an error.
+***
 ## rm
 ### Usage: `$ rm [FLAGS] [FILE]...`
 ### Flags supported:
@@ -61,24 +78,14 @@ if `FILE` is `-`, or no `FILE` is provided, use `stdin` as the file pointer.
 5. If there is no directory argument, print an error message.
 6. If the user tries to created nested directories without passing the -p flag, print an error message.
 ***
-
-## date
-### Usage: `$ date [FLAGS]`
-### Flags supported:
-1. `-u`: print Coordinated Universal Time
-2. `-R`: print date and time in RFC 5322 format
-### Edge cases handled:
-1. If the flag is invalid, print an error.
-2. If the date passed is invalid, print an error.
-***
 # Pseudocode
 ```py
-Entry point:
+start shell:
     main()
-        -calls shell_loop()
+        -call shell_loop()
     
     shell_loop()
-        -reads a line of input from stdin
+        -read a line of input from stdin
         -parse and split the line into an array of arguments
         -call shell_execute(args)
 
