@@ -33,7 +33,6 @@ void dll_insert(struct dirent *data)
         new_node->prev = linkedlist_tail;
         linkedlist_tail = new_node;
     }
-    // return &linkedlist_head;
 }
 
 void sort_linkedlist(struct linkedlist_node *head)

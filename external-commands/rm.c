@@ -13,6 +13,7 @@ struct flags
 };
 
 int remove_file(const char *path, struct flags *flags);
+
 int is_regular_file(const char *path);
 int is_directory(const char *path);
 
@@ -133,7 +134,7 @@ int remove_file(const char *path, struct flags *flags)
         }
         if (rmdir(path) != 0)
         {
-            // loop through all files in path and call remove_file()
+            // loop through all files in path and call remove_file() on each entry as appropriate
             DIR *d = opendir(path);
             if (d == NULL)
             {
@@ -176,6 +177,8 @@ int remove_file(const char *path, struct flags *flags)
     }
     return 0;
 }
+
+/*----------------------------------------------- UTILITY FUNCTIONS -----------------------------------------------*/
 
 int is_directory(const char *path)
 {

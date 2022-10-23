@@ -12,6 +12,7 @@ struct flags
 };
 
 int create_directory(const char *path, struct flags *flags);
+
 int is_regular_file(const char *path);
 int is_directory(const char *path);
 
@@ -143,6 +144,8 @@ int create_directory(const char *path, struct flags *flags)
         return 0;
     }
 }
+
+/*----------------------------------------------- UTILITY FUNCTIONS -----------------------------------------------*/
 
 int is_directory(const char *path)
 {
