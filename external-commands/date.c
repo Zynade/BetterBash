@@ -69,6 +69,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     struct tm *current_time = gmtime(&now);
+    struct tm *local_time = localtime(&now);
     if (current_time == NULL)
     {
         perror("date");
@@ -80,12 +81,26 @@ int main(int argc, char *argv[])
 
     if (flags->R)
     {
-        strftime(buffer, BUFFER_LEN, "%a, %d %b %Y %T +0000", current_time);
+        if (flags->u)
+        {
+            strftime(buffer, BUFFER_LEN, "%a, %d %b %Y %T %z", current_time);
+        }
+        else
+        {
+            strftime(buffer, BUFFER_LEN, "%a, %d %b %Y %T %z", local_time);
+        }
         puts(buffer);
     }
     else
     {
-        strftime(buffer, BUFFER_LEN, "%a %b %d %T UTC %Y", current_time);
+        if (flags->u)
+        {
+            strftime(buffer, BUFFER_LEN, "%a %b %d %T %Z %Y", current_time);        
+        }
+        else
+        {
+            strftime(buffer, BUFFER_LEN, "%a %b %d %T %Z %Y", local_time);
+        }
         puts(buffer);
     }
     free(flags);
