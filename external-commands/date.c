@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     {
         if (flags->u)
         {
-            strftime(buffer, BUFFER_LEN, "%a, %d %b %Y %T %z", current_time);
+            strftime(buffer, BUFFER_LEN, "%a, %d %b %Y %T +0000", current_time);
         }
         else
         {
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
     {
         if (flags->u)
         {
-            strftime(buffer, BUFFER_LEN, "%a %b %d %T %Z %Y", current_time);        
+            strftime(buffer, BUFFER_LEN, "%a %b %d %T UTC %Y", current_time);        
         }
         else
         {
