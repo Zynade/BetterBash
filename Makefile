@@ -1,6 +1,6 @@
 cmd_dir := ./external-commands/
 cmds := ls cat rm mkdir date
-FLAGS := -g -Wall -Wshadow -Wextra -Wconversion
+FLAGS := -g3 -Wall -Wshadow -Wextra -Wconversion -Wdouble-promotion -Werror -Wshadow -Wformat=2 -Wformat-overflow -Wformat-truncation -Wundef -Wconversion -fno-common
 
 define compile_program =
 	gcc -o $(1) $(1).c $(FLAGS)
