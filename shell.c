@@ -5,9 +5,20 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <assert.h>
+#include <pthread.h>
 
 #define MAX_TOKENS_BUFFER_SIZE 1000
 #define ARGUMENT_BUFFER_LENGTH 1024
+
+struct thread_args
+{
+    char *command;
+    char **argv;
+};
+struct thread_ret_val
+{
+    int status;
+};
 
 void shell_loop(void);
 char *read_line(void);
@@ -20,7 +31,7 @@ void cd(int argc, char *argv[]);
 void echo(int argc, char *argv[]);
 void pwd(void);
 
-int start_thread(char *command, char *argv[]);
+void *start_thread(void *thread_arg);
 int start_process(char *command, char *argv[]);
 
 /*--------------------------------------------------- MAIN ---------------------------------------------------*/
@@ -153,7 +164,18 @@ int shell_execute(int argc, char *argv[])
                 fprintf(stderr, "shell: command not found: %s\n", command);
                 return 1;
             }
-            return start_thread(command, argv);
+            pthread_t thread;
+            struct thread_args *thread_arg = malloc(sizeof(struct thread_args));
+            struct thread_ret_val *rvals = malloc(sizeof(struct thread_ret_val));
+            thread_arg->command = command;
+            thread_arg->argv = argv;
+
+            pthread_create(&thread, NULL, start_thread, thread_arg);
+            pthread_join(thread, (void **) &rvals);
+            int status = rvals->status;
+            free(thread_arg);
+            free(rvals);
+            return status;
         }
         else if (mode == 'p')
         {
@@ -166,12 +188,16 @@ int shell_execute(int argc, char *argv[])
 
 /*-------------------------------------------- PROCESSES & THREADS --------------------------------------------*/
 
-int start_thread(char *command, char *argv[])
+void *start_thread(void *thread_arg)
 {
     /*
     Starts a thread.
     Returns the return code of the thread.
     */
+    struct thread_args *thread_argument = (struct thread_args *) thread_arg;
+    struct thread_ret_val *rvals = malloc(sizeof(struct thread_ret_val));
+    char *command = thread_argument->command;
+    char **argv = thread_argument->argv;
     char path[1024];
     strcpy(path, PROGRAM_PATH);
     strcat(path, "/external-commands/");
@@ -183,7 +209,9 @@ int start_thread(char *command, char *argv[])
         strcat(path, arg);
         arg = argv[i+1];
     }
-    return system(path);
+    int status = system(path);
+    rvals->status = status;
+    return (void *) rvals;
 }
 
 int start_process(char *command, char *argv[])
