@@ -140,8 +140,15 @@ int main(int argc, char *argv[])
         }
         if (is_path_to_be_changed && index != argc)
         {
-            strcat(path, "/");
-            strcat(path, argv[index]);
+            if (argv[index][0] != '/')
+            {
+                strcat(path, "/");
+                strcat(path, argv[index]);
+            }
+            else
+            {
+                strcpy(path, argv[index]);
+            }
         }
     }
 

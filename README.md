@@ -32,7 +32,7 @@ if `DIRECTORY` is not specified, print the contents of the current working direc
 1. If the directory does not exist, print an error message.
 2. If the directory is not a directory, print an error message.
 3. If the directory is not readable, print an error message.
-
+4. If the directory path is an absolute path instead of relative to the current directory, handle it accordingly.
 ***
 ## cat
 ### Usage: `$ cat [FLAGS] [FILE]...`
