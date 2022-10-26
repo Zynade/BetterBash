@@ -103,7 +103,7 @@ char *read_line(void)
     size_t buffer_size = 0;
     if (getline(&line, &buffer_size, stdin) == -1)
     {
-        printf("\nshell: EOF detected, terminating shell.\n");
+        printf("\nBetterBash: EOF detected, terminating shell.\n");
         exit(0);
     }
     return line;
@@ -129,7 +129,7 @@ int tokenize_line(char *line, char **args)
         argc++;
         if (argc > MAX_TOKENS_BUFFER_SIZE)
         {
-            fprintf(stderr, "shell: your instruction contains more arguments than permitted (max: %d)", MAX_TOKENS_BUFFER_SIZE);
+            fprintf(stderr, "BetterBash: your instruction contains more arguments than permitted (max: %d)", MAX_TOKENS_BUFFER_SIZE);
             return -1;
         }
         args[i++] = token;
@@ -177,7 +177,7 @@ int shell_execute(int argc, char *argv[])
         // External command
         if (strlen(command) < 2)
         {
-            fprintf(stderr, "shell: command not found: %s\n", command);
+            fprintf(stderr, "BetterBash: command not found: %s\n", command);
             return 1;
         }
 
@@ -194,7 +194,7 @@ int shell_execute(int argc, char *argv[])
             // Start a thread
             if (argc < 2) // Thread instructions must have at least two arguments: the program, and "&t"
             {
-                fprintf(stderr, "shell: command not found: %s\n", command);
+                fprintf(stderr, "BetterBash: command not found: %s\n", command);
                 return 1;
             }
             pthread_t thread;
@@ -265,13 +265,13 @@ int start_process(char *command, char *argv[])
         
         if (execv(path, argv) == -1)
         {
-            fprintf(stderr, "shell: command not found: %s\n", command);
+            fprintf(stderr, "BetterBash: command not found: %s\n", command);
         }
         exit(0);
     }
     else if (pid < 0)
     {
-        fprintf(stderr, "shell: error forking");
+        fprintf(stderr, "BetterBash: error forking");
         return -1;
     }
     else
@@ -294,7 +294,7 @@ void cd(int argc, char *argv[])
     // get the home directory path
     if (argc > 2)
     {
-        fprintf(stderr, "shell: cd: too many arguments\n");
+        fprintf(stderr, "BetterBash: cd: too many arguments\n");
         return;
     }
     if (argc < 2 || strcmp(argv[1], "~") == 0 || strcmp(argv[1], "-") == 0)
@@ -302,7 +302,7 @@ void cd(int argc, char *argv[])
         char *home = getenv("HOME");
         if (home == NULL)
         {
-            fprintf(stderr, "shell: could not get home directory path");
+            fprintf(stderr, "BetterBash: cd: could not get home directory path");
             return;
         }
         if (chdir(home) != 0)
@@ -317,7 +317,7 @@ void cd(int argc, char *argv[])
         char *shell_path = PROGRAM_PATH;
         if (shell_path == NULL)
         {
-            fprintf(stderr, "shell: could not get shell directory path");
+            fprintf(stderr, "BetterBash: cd: could not get shell directory path");
             return;
         }
         if (chdir(shell_path) != 0)
@@ -336,7 +336,7 @@ void cd(int argc, char *argv[])
         char *new_pwd = malloc(1024);
         if (new_pwd == NULL)
         {
-            fprintf(stderr, "shell: could not allocate memory");
+            fprintf(stderr, "BetterBash: cd: could not allocate memory");
             return;
         }
         strcpy(new_pwd, getenv("PWD"));
@@ -381,7 +381,7 @@ void echo(int argc, char *argv[])
             }
             else
             {
-                fprintf(stderr, "shell: echo: invalid option -- '%c'\n", buffer[1]);
+                fprintf(stderr, "BetterBash: echo: invalid option -- '%c'\n", buffer[1]);
                 return;
             }
         }
@@ -414,7 +414,7 @@ void pwd(int argc, char *argv[])
     */
     if (argc > 2)
     {
-        fprintf(stderr, "shell: pwd: too many arguments\n");
+        fprintf(stderr, "BetterBash: pwd: too many arguments\n");
         return;
     }
 
@@ -445,11 +445,11 @@ void pwd(int argc, char *argv[])
         }
         else if (argv[1][0] == '-')
         {
-            fprintf(stderr, "shell: pwd: invalid option -- '%c'\n", argv[1][1]);
+            fprintf(stderr, "BetterBash: pwd: invalid option -- '%c'\n", argv[1][1]);
         }
         else
         {
-            fprintf(stderr, "shell: pwd: too many arguments\n");
+            fprintf(stderr, "BetterBash: pwd: too many arguments\n");
         }
     }
     return;

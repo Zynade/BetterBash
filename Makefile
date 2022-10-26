@@ -6,13 +6,13 @@ define compile_program =
 	gcc -o $(1) $(1).c $(FLAGS)
 endef
 
-all: shell
+all: betterbash
 	$(MAKE) -C $(cmd_dir)
 
-shell: shell.c
-	$(call compile_program,shell)
+betterbash: betterbash.c
+	$(call compile_program,betterbash)
 
 clean:
-	rm shell
+	rm betterbash
 	cd $(cmd_dir) && rm $(cmds)
 	
