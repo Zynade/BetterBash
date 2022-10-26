@@ -55,13 +55,42 @@ void shell_loop(void)
     int return_code = 1;
     while (true)
     {
-        printf("$ ");
+        char *username = getenv("USER");
+        if (username == NULL)
+        {
+            username = "user";
+        }
+
+        char *hostname = malloc(1024);
+        if (gethostname(hostname, 1024) != 0)
+        {
+            hostname = "host";
+        }
+
+        // get the current directory without full path
+        char *cwd = malloc(1024);
+        assert(getcwd(cwd, 1024) != NULL);
+        char *current_dir = strrchr(cwd, '/');
+        if (current_dir == NULL)
+        {
+            current_dir = cwd;
+        }
+        else
+        {
+            current_dir = current_dir + 1;
+        }
+
+        printf("%s@%s :: %s $ ", username, hostname, current_dir);
+        free(hostname);
+        free(cwd);
+
         line = read_line();
         int argc = tokenize_line(line, argv);
-        if (argc == -1) continue; // The user entered a line that could not be parsed, so prompt them to enter another instruction.
+        if (argc == -1) continue;
         return_code = shell_execute(argc, argv);
         if (return_code < 0) break;
     }
+    free(line);
     free(argv);
 }
 
@@ -258,9 +287,37 @@ void cd(int argc, char *argv[])
     Changes the current working directory of the current process.
     */
 
-    if (argc < 2)
+    // get the home directory path
+    if (argc > 2)
     {
-        fprintf(stderr, "cd: expected argument to \"cd\"\n");
+        fprintf(stderr, "shell: cd: too many arguments\n");
+        return;
+    }
+    if (argc < 2 || strcmp(argv[1], "~") == 0 || strcmp(argv[1], "-") == 0)
+    {
+        char *home = getenv("HOME");
+        if (home == NULL)
+        {
+            fprintf(stderr, "shell: could not get home directory path");
+            return;
+        }
+        if (chdir(home) != 0)
+        {
+            perror("cd");
+        }
+    }
+    else if (strcmp(argv[1], "-s") == 0)
+    {
+        char *shell_path = PROGRAM_PATH;
+        if (shell_path == NULL)
+        {
+            fprintf(stderr, "shell: could not get shell directory path");
+            return;
+        }
+        if (chdir(shell_path) != 0)
+        {
+            perror("cd");
+        }
     }
     else
     {
@@ -287,9 +344,26 @@ void echo(int argc, char *argv[])
     for (int i = 1; i < argc; i++)
     {
         strcpy(buffer, argv[i]);
-        if (i == 1 && buffer[0] == '-' && buffer[1] == 'n')
+        if (strcmp(buffer, "--help") == 0)
         {
-            flag_n = true;
+            printf("\n\tUsage: echo [FLAGS] [STRING] \n");
+            printf("\tEcho the STRING(s) to standard output.\n");
+            printf("\tSupported flags:\n");
+            printf("\t\t-n:\tdo not output the trailing newline\n");
+            printf("\n");
+            return;
+        }
+        if (i == 1 && buffer[0] == '-' && buffer[1] != '\0')
+        {
+            if (buffer[1] == 'n')
+            {
+                flag_n = true;
+            }
+            else
+            {
+                fprintf(stderr, "shell: echo: invalid option -- '%c'\n", buffer[1]);
+                return;
+            }
         }
         else
         {
