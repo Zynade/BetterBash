@@ -19,7 +19,7 @@
 ### Usage: `$ cd [directory]`
 ### Flags:
 - `~` or `-` - Navigate to the home directory
-- `-s` - Navigate to the shell's root directory
+- `-s` - Navigate to the BetteBash home directory
 ### Edge cases handled:
 - If no directory is specified, the user is taken to their home directory.
 - If the directory does not exist, the user is notified.
@@ -34,7 +34,7 @@
 - `--help`: print a useful instruction message
 ### Edge cases handled:
 - If the user passes a flag that is not supported, the user is notified.
-- If the user passes no arguments, standard bash shell behaviour is followed.
+- If the user passes no arguments, standard Bash behaviour is followed.
 ### Assumptions:
 - The user will not pass more than one flag.
 - The user will not pass multi-line strings.

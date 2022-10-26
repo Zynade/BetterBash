@@ -22,7 +22,7 @@ Supports the following commands:
     - [mkdir](documentation.md#mkdir)
 
 ## Installation
-1. Clone the repository: `git clone https://github.com/Zynade/simple-shell.git && cd betterbash`.
+1. Clone the repository: `git clone https://github.com/Zynade/BetterBash.git && cd BetterBash`.
 2. Run `make` to compile the program.
 3. Run `./betterbash` to start the shell.
 
@@ -39,4 +39,4 @@ Refer to the [documentation](documentation.md) for an exhaustive list of command
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Issues
-If you find any bugs, notice any inconsistencies, typos, or have any suggestions, please open an issue on the [issues page](https://github.com/Zynade/simple-shell/issues).
+If you find any bugs, notice any inconsistencies, typos, or have any suggestions, please open an issue on the [issues page](https://github.com/Zynade/BetterBash/issues).
