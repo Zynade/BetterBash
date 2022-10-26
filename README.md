@@ -1,139 +1,42 @@
-# About
-An attempt at implementing a terminal shell. 
+# BetterBash
+A simplified imitation of the bash shell written in C.  
 
-My goal was to implement the following commands, with the option of passing two commonly used flags for each command:  
-- Internal commands:
-    - [cd](#cd)  
-    - [echo](#echo)  
-    - [pwd](#pwd)
-    - [exit](#exit)
-- External commands:
-    - [ls](#ls)
-    - [cat](#cat)
-    - [date](#date)
-    - [rm](#rm)
-    - [mkdir](#mkdir)
+## Disclaimer
+This shell is not meant to be used as a replacement for Bash. Despite the name, it is merely a hobby project I made in my spare time for fun.
 
-# How to run
-1. Clone the repository: `git clone https://github.com/Zynade/simple-shell.git`
-2. Navigate to the directory: `cd simple-shell`
-3. Compile the program: `make`
-4. Run the program: `./shell`
+This shell has been tested to work on Ubuntu, Pop!_OS, Fedora, and Artix Linux. It may or may not work on macOS or other Linux distributions.
+I have no plans on adding support for Windows.
 
-# Documentation
-## cd
-### Usage: `$ cd [directory]`
-### Flags:
-1. `~` or `-` - Navigate to the home directory
-2. `-s` - Navigate to the shell's root directory
-### Edge cases handled:
-- If no directory is specified, the user is taken to their home directory.
-- If the directory does not exist, the user is notified.
-- If the directory is not a directory, the user is notified.
-- If the user does not have permission to access the directory, the user is notified.
-- If the user passes more than one directory, the user is notified.
-***
-## echo
-### Usage: `$ echo [FLAGS] [STRING]` 
-### Flags supported:
-1. `-n`: do not append the newline character
-2. `--help`: print a useful instruction message
-### Edge cases handled:
-- If the user passes a flag that is not supported, the user is notified.
-- If the user passes no arguments, standard bash shell behaviour is followed.
-### Assumptions:
-- The user will not pass more than one flag.
-- The user will not pass multi-line strings.
-***
-## pwd
-### Usage: `$ pwd [FLAGS]`
-### Flags supported:
-1. `-L`: Use the logical path. Use PWD from environment, even if it contains symlinks. This is the default option.
-2. `-P`: Use the physical path. Resolve all symlinks.
-### Edge cases handled:
-- If the user passes a flag that is not supported, the user is notified.
-- If the user passes too many arguments, the user is notified.
+## Features
+Supports the following commands:
+- built-in commands:
+    - [cd](documentation.md#cd)  
+    - [echo](documentation.md#echo)  
+    - [pwd](documentation.md#pwd)
+    - [exit](documentation.md#exit)
+- external commands:
+    - [ls](documentation.md#ls)
+    - [cat](documentation.md#cat)
+    - [date](documentation.md#date)
+    - [rm](documentation.md#rm)
+    - [mkdir](documentation.md#mkdir)
 
-***
-## exit
-### Usage: `$ exit`
-***
-## ls
-### Usage: `$ ls [FLAGS] [DIRECTORY]`
-if `DIRECTORY` is not specified, print the contents of the current working directory.
-### Flags supported:
-1. `-a`: do not ignore hidden files, i.e., entries starting with "."
-2. `-r`: reverse order while sorting
-### Edge cases handled:
-1. If the directory does not exist, print an error message.
-2. If the directory is not a directory, print an error message.
-3. If the directory is not readable, print an error message.
-4. If the directory path is an absolute path instead of relative to the current directory, handle it accordingly.
-### Assumptions:
-- The user will not try to list multiple directories in the same command.
-***
-## cat
-### Usage: `$ cat [FLAGS] [FILE]...`
-if `FILE` is `-`, or no `FILE` is provided, use `stdin` as the file pointer.
-### Flags supported:
-1. `-n`: number all output lines
-2. `-E`: display $ at end of each line
-### Edge cases handled:
-1. If the file does not exist, print an error message.
-2. If the file is a directory, print an error message.
-***
-## date
-### Usage: `$ date [FLAGS]`
-### Flags supported:
-1. `-u`: print Coordinated Universal Time
-2. `-R`: print date and time in RFC 5322 format
-### Edge cases handled:
-1. If the flag is invalid, print an error.
-2. If the date passed is invalid, print an error.
-***
-## rm
-### Usage: `$ rm [FLAGS] [FILE]...`
-### Flags supported:
-1. `-r`: remove directories and their contents recursively
-2. `-i`: prompt for confirmation before every removal 
-### Edge cases handled: 
-1. If the file does not exist, print an error message.
-2. If the file is a directory and the -r flag is not passed, print an error message.
-3. If the file is named `-`, invoking `rm -` does not lead to an error.
-4. If the file is named '.' or '..', invoking `rm .` or `rm ..` does not lead to an error.
-5. If there is no file argument, print an error message.
-***
-## mkdir
-### Usage: `$ mkdir [FLAGS] [DIRECTORY]...`
-### Flags supported:
-1. `-v`: Verbose output. Print a message for each created directory
-2. `-p`: No error if existing. make parent directories as needed.
-### Edge cases handled:
-1. If the directory already exists, print an error message.
-2. If the directory is named `-`, invoking `mkdir -` does not lead to an error.
-3. If the directory is named '.' or '..', invoking `mkdir .` or `mkdir ..` does not lead to an error.
-4. If the directory is a regular file, print an error message.
-5. If there is no directory argument, print an error message.
-6. If the user tries to created nested directories without passing the -p flag, print an error message.
-***
-# Pseudocode
-```py
-start shell:
-    main()
-        -call shell_loop()
-    
-    shell_loop()
-        -read a line of input from stdin
-        -parse and split the line into an array of arguments
-        -call shell_execute(args)
+## Installation
+1. Clone the repository: `git clone https://github.com/Zynade/simple-shell.git && cd betterbash`.
+2. Run `make` to compile the program.
+3. Run `./betterbash` to start the shell.
 
-    shell_execute(args):
-        mode = args[0][:-2]
-        if args[0] is inbuilt:
-            function(args)
-        else:
-            if mode is thread:
-                start_thread(args)
-            else:
-                start_process(args)
-```
+## How to use
+1. Run the program: `./shell`
+2. Enter a command. For example, `ls -a`
+3. Press `Enter` to execute the command.
+4. To exit the shell, enter `exit` or press `Ctrl + D`.
+
+## Documentation
+Refer to the [documentation](documentation.md) for an exhaustive list of commands and flags supported.
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Issues
+If you find any bugs, notice any inconsistencies, typos, or have any suggestions, please open an issue on the [issues page](https://github.com/Zynade/simple-shell/issues).
