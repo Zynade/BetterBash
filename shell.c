@@ -29,7 +29,7 @@ char PROGRAM_PATH[1024];
 
 void cd(int argc, char *argv[]);
 void echo(int argc, char *argv[]);
-void pwd(void);
+void pwd(int argc, char *argv[]);
 
 void *start_thread(void *thread_arg);
 int start_process(char *command, char *argv[]);
@@ -146,7 +146,7 @@ int shell_execute(int argc, char *argv[])
     Returns the return code of the command.
 
     Supports the following commands:
-        in-built: cd, echo, pwd
+        in-built: cd, echo, pwd, exit
         external: ls, cat, date, rm, mkdir
     */
 
@@ -166,7 +166,11 @@ int shell_execute(int argc, char *argv[])
     }
     else if (strcmp(command, "pwd") == 0)
     {
-        pwd();
+        pwd(argc, argv);
+    }
+    else if (strcmp(command, "exit") == 0)
+    {
+        return -1;
     }
     else
     {
@@ -305,6 +309,8 @@ void cd(int argc, char *argv[])
         {
             perror("cd");
         }
+        setenv("OLDPWD", getenv("PWD"), 1);
+        setenv("PWD", home, 1);
     }
     else if (strcmp(argv[1], "-s") == 0)
     {
@@ -318,6 +324,8 @@ void cd(int argc, char *argv[])
         {
             perror("cd");
         }
+        setenv("OLDPWD", getenv("PWD"), 1);
+        setenv("PWD", shell_path, 1);
     }
     else
     {
@@ -325,6 +333,18 @@ void cd(int argc, char *argv[])
         {
             perror("cd");
         }
+        char *new_pwd = malloc(1024);
+        if (new_pwd == NULL)
+        {
+            fprintf(stderr, "shell: could not allocate memory");
+            return;
+        }
+        strcpy(new_pwd, getenv("PWD"));
+        strcat(new_pwd, "/");
+        strcat(new_pwd, argv[1]);
+
+        setenv("OLDPWD", getenv("PWD"), 1);
+        setenv("PWD", new_pwd, 1);
     }
 }
 void echo(int argc, char *argv[])
@@ -387,19 +407,50 @@ void echo(int argc, char *argv[])
     if (!flag_n) printf("\n");
     return;
 }
-void pwd(void)
+void pwd(int argc, char *argv[])
 {
     /*
     Prints the current working directory to stdout.
     */
-   
-    char cwd[1024];
-    if (getcwd(cwd, sizeof(cwd)) != NULL)
+    if (argc > 2)
     {
+        fprintf(stderr, "shell: pwd: too many arguments\n");
+        return;
+    }
+
+    if (argc == 1 || (argv[1][0] == '-' && argv[1][1] == 'L'))
+    {
+        char *cwd = malloc(1024);
+        cwd = getenv("PWD");
+        if (cwd == NULL)
+        {
+            perror("pwd");
+            return;
+        }
         printf("%s\n", cwd);
+        // free(cwd);
     }
-    else
+    else 
     {
-        perror("pwd");
+        if (argv[1][0] == '-' && argv[1][1] == 'P')
+        {     
+            char *cwd = getcwd(NULL, 0);
+            if (cwd == NULL)
+            {
+                perror("pwd");
+                return;
+            }
+            printf("%s\n", cwd);
+            free(cwd);
+        }
+        else if (argv[1][0] == '-')
+        {
+            fprintf(stderr, "shell: pwd: invalid option -- '%c'\n", argv[1][1]);
+        }
+        else
+        {
+            fprintf(stderr, "shell: pwd: too many arguments\n");
+        }
     }
+    return;
 }
