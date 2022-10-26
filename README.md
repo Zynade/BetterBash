@@ -2,7 +2,17 @@
 An attempt at implementing a terminal shell. 
 
 My goal was to implement the following commands, with the option of passing two commonly used flags for each command:  
-[cd](#cd), [echo](#echo), [pwd](#pwd), [ls](#ls), [cat](#cat), [date](#date), [rm](#rm), [mkdir](#mkdir)
+- Internal commands:
+    - [cd](#cd)  
+    - [echo](#echo)  
+    - [pwd](#pwd)
+    - [exit](#exit)
+- External commands:
+    - [ls](#ls)
+    - [cat](#cat)
+    - [date](#date)
+    - [rm](#rm)
+    - [mkdir](#mkdir)
 
 # How to run
 1. Clone the repository: `git clone https://github.com/Zynade/simple-shell.git`
@@ -13,26 +23,54 @@ My goal was to implement the following commands, with the option of passing two 
 # Documentation
 ## cd
 ### Usage: `$ cd [directory]`
+### Flags:
+1. `~` or `-` - Navigate to the home directory
+2. `-s` - Navigate to the shell's root directory
+### Edge cases handled:
+- If no directory is specified, the user is taken to their home directory.
+- If the directory does not exist, the user is notified.
+- If the directory is not a directory, the user is notified.
+- If the user does not have permission to access the directory, the user is notified.
+- If the user passes more than one directory, the user is notified.
 ***
 ## echo
-### Usage: `$ echo [arg]` 
+### Usage: `$ echo [FLAGS] [STRING]` 
 ### Flags supported:
 1. `-n`: do not append the newline character
+2. `--help`: print a useful instruction message
+### Edge cases handled:
+- If the user passes a flag that is not supported, the user is notified.
+- If the user passes no arguments, standard bash shell behaviour is followed.
+### Assumptions:
+- The user will not pass more than one flag.
+- The user will not pass multi-line strings.
 ***
 ## pwd
-### Usage: `$ pwd`
+### Usage: `$ pwd [FLAGS]`
+### Flags supported:
+1. `-L`: Use the logical path. Use PWD from environment, even if it contains symlinks. This is the default option.
+2. `-P`: Use the physical path. Resolve all symlinks.
+### Edge cases handled:
+- If the user passes a flag that is not supported, the user is notified.
+- If the user passes too many arguments, the user is notified.
+
+***
+## exit
+### Usage: `$ exit`
 ***
 ## ls
 ### Usage: `$ ls [FLAGS] [DIRECTORY]`
 if `DIRECTORY` is not specified, print the contents of the current working directory.
 ### Flags supported:
 1. `-a`: do not ignore hidden files, i.e., entries starting with "."
-2. `-r`: reserve order while sorting
+2. `-r`: reverse order while sorting
 ### Edge cases handled:
 1. If the directory does not exist, print an error message.
 2. If the directory is not a directory, print an error message.
 3. If the directory is not readable, print an error message.
 4. If the directory path is an absolute path instead of relative to the current directory, handle it accordingly.
+### Assumptions:
+- The user will not try to list multiple directories in the same command.
 ***
 ## cat
 ### Usage: `$ cat [FLAGS] [FILE]...`
