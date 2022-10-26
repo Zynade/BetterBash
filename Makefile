@@ -9,7 +9,7 @@ endef
 all: shell
 	$(MAKE) -C $(cmd_dir)
 
-shell:
+shell: shell.c
 	$(call compile_program,shell)
 
 clean:

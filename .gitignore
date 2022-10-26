@@ -6,3 +6,4 @@ external-commands/rm
 external-commands/mkdir
 shell
 .vscode/
+.git-old
