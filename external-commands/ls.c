@@ -5,6 +5,16 @@
 #include <unistd.h>
 #include <string.h>
 
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
+bool is_ELF_exectuable(char *file_path);
+
 /*----------------------------------------------- LINKED LIST IMPLEMENTATION -----------------------------------------------*/
 
 struct linkedlist_node {
@@ -167,15 +177,45 @@ int main(int argc, char *argv[])
         perror("ls");
     }
     sort_linkedlist(linkedlist_head);
+
+    // Print the files in the linked list
     if (!flag_r)
     {
         struct linkedlist_node *current = linkedlist_head;
         while (current != NULL)
         {
+            char *file_path = malloc(strlen(path) + strlen(current->data->d_name) + 2);
+            strcpy(file_path, path);
+            if (file_path[strlen(file_path) - 1] != '/')
+            {
+                strcat(file_path, "/");
+            }
+            strcat(file_path, current->data->d_name);
+
             if (flag_a || current->data->d_name[0] != '.')
             {
-                printf("%s  ", current->data->d_name);
+                // if the file type is a directory, print it in blue
+                if (current->data->d_type == DT_DIR)
+                {
+                    printf(ANSI_COLOR_BLUE "%s  " ANSI_COLOR_RESET, current->data->d_name);
+                }
+                // if the file type is an ELF executable, print it in green
+                else if (is_ELF_exectuable(file_path))
+                {
+                    printf(ANSI_COLOR_GREEN "%s  " ANSI_COLOR_RESET, current->data->d_name);
+                }
+                // if the file type is a symbolic link, print it in cyan
+                else if (current->data->d_type == DT_LNK)
+                {
+                    printf(ANSI_COLOR_CYAN "%s  " ANSI_COLOR_RESET, current->data->d_name);
+                }
+                // if the file type is a regular file, print it in the default colour
+                else
+                {
+                    printf("%s  ", current->data->d_name);
+                }
             }
+            free(file_path);
             current = current->next;
         }
     }
@@ -184,9 +224,36 @@ int main(int argc, char *argv[])
         struct linkedlist_node *current = linkedlist_tail;
         while (current != NULL)
         {
+            char *file_path = malloc(strlen(path) + strlen(current->data->d_name) + 2);
+            strcpy(file_path, path);
+            if (file_path[strlen(file_path) - 1] != '/')
+            {
+                strcat(file_path, "/");
+            }
+            strcat(file_path, current->data->d_name);
+
             if (flag_a || current->data->d_name[0] != '.')
             {
-                printf("%s  ", current->data->d_name);
+                // if the file type is a directory, print it in blue
+                if (current->data->d_type == DT_DIR)
+                {
+                    printf(ANSI_COLOR_BLUE "%s  " ANSI_COLOR_RESET, current->data->d_name);
+                }
+                // if the file type is an ELF executable, print it in green
+                else if (is_ELF_exectuable(file_path))
+                {
+                    printf(ANSI_COLOR_GREEN "%s  " ANSI_COLOR_RESET, current->data->d_name);
+                }
+                // if the file type is a symbolic link, print it in cyan
+                else if (current->data->d_type == DT_LNK)
+                {
+                    printf(ANSI_COLOR_CYAN "%s  " ANSI_COLOR_RESET, current->data->d_name);
+                }
+                // if the file type is a regular file, print it in the default colour
+                else
+                {
+                    printf("%s  ", current->data->d_name);
+                }
             }
             current = current->prev;
         }
@@ -196,4 +263,26 @@ int main(int argc, char *argv[])
     free_linkedlist(linkedlist_head);
 
     return 0;
+}
+
+bool is_ELF_exectuable(char *file_path)
+{
+    /*
+    This function checks if the file at the given path is an ELF executable.
+    It does this by checking the first 4 bytes of the file to see if they match the ELF magic number.
+    */
+    FILE *fp = fopen(file_path, "rb");
+    if (fp == NULL)
+    {
+        return false;
+    }
+    unsigned char buffer[4];
+    fread(buffer, 1, 4, fp);
+    fclose(fp);
+    if (buffer[0] == 0x7f && buffer[1] == 'E' && buffer[2] == 'L' && buffer[3] == 'F')
+    {
+        return true;
+    }
+    return false;
+    
 }
