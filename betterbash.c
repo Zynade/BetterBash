@@ -34,6 +34,14 @@ void pwd(int argc, char *argv[]);
 void *start_thread(void *thread_arg);
 int start_process(char *command, char *argv[]);
 
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
 /*--------------------------------------------------- MAIN ---------------------------------------------------*/
 
 int main(void)
@@ -80,7 +88,7 @@ void shell_loop(void)
             current_dir = current_dir + 1;
         }
 
-        printf("%s@%s :: %s $ ", username, hostname, current_dir);
+        printf(ANSI_COLOR_YELLOW "%s@%s" ANSI_COLOR_RESET " :: " ANSI_COLOR_BLUE "/%s/" ANSI_COLOR_RED " $ " ANSI_COLOR_RESET, username, hostname, current_dir);
         free(hostname);
         free(cwd);
 
