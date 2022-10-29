@@ -68,9 +68,11 @@ int main(int argc, char *argv[])
         free(flags);
         return 1;
     }
-    struct tm *current_time = gmtime(&now);
-    struct tm *local_time = localtime(&now);
-    if (current_time == NULL)
+    struct tm *current_time = (struct tm *)malloc(sizeof(struct tm));
+    struct tm *local_time = (struct tm *)malloc(sizeof(struct tm));
+    gmtime_r(&now, current_time);
+    localtime_r(&now, local_time);
+    if (current_time == NULL || local_time == NULL)
     {
         perror("date");
         free(flags);
@@ -104,5 +106,7 @@ int main(int argc, char *argv[])
         puts(buffer);
     }
     free(flags);
+    free(current_time);
+    free(local_time);
     return 0;
 }
