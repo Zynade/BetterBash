@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
             {
                 strcat(file_name, argv[i]);
             }
-            if (echo_from_file(file_name, flag_n, flag_E) == 1)
+            if (argv[i][0] == '-' || echo_from_file(file_name, flag_n, flag_E) == 1)
             {
                 continue;
             }
